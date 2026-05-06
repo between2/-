@@ -189,7 +189,7 @@
 - **赞助**：项目维护不易，喜欢本项目的话，可以作者大大一点小小的鼓励哦，您的每一份支持都是我前进的动力\~ 
 
 
-  <一个href="https://afdian.com/a/marseventh"><IMGsrc="https://img.shields.io/badge/AFDIAN-946CE6?style=for-the-badge&logo=afdian&logoColor=white" 高度="36" alt="Afdian"></一个>&nbsp;&nbsp;<一个href="readme/weixin-reward.png" 目标="_空白"><IMGsrc="https://img.shields.io/badge/WeChat_Pay-07c160?style=for-the-badge&logo=wechat&logoColor=white" 高度="36" alt="WeChat Pay"></一个>&nbsp;&nbsp;<一个href="readme/alipay-reward.png" 目标="_空白"><IMGsrc="https://img.shields.io/badge/Alipay-1677FF?style=for-the-badge&logo=alipay&logoColor=white" 高度="36" alt="WeChat Pay"></一个>
+<一个href="https://afdian.com/a/marseventh"><IMGsrc="https://img.shields.io/badge/AFDIAN-946CE6?style=for-the-badge&logo=afdian&logoColor=white"高度="36"alt="Afdian"></一个>&nbsp;&nbsp;<一个href="readme/weixin-reward.png"目标="_空白"><IMGsrc="https://img.shields.io/badge/WeChat_Pay-07c160?style=for-the-badge&logo=wechat&logoColor=white"高度="36"alt="微信支付"></一个>&nbsp;&nbsp;<一个href="readme/alipay-reward.png"目标="_空白"><IMGsrc="https://img.shields.io/badge/Alipay-1677FF?style=for-the-badge&logo=alipay&logoColor=white"高度="36"alt="微信支付"></一个>
 
 - **赞助商**：感谢以下赞助者对本项目的支持！
 
@@ -203,14 +203,14 @@
 
 **如果觉得项目不错希望您能给个免费的star✨✨✨，非常感谢！**
 
-[![Star History Chart](https://api.star-history.com/svg?repos=MarSeventh/CloudFlare-ImgBed,MarSeventh/Sanyue-ImgHub&type=Date)](https://star-history.com/#MarSeventh/CloudFlare-ImgBed&MarSeventh/Sanyue-ImgHub&Date)
+[![星形历史图表](https://api.star-history.com/svg?repos=MarSeventh/CloudFlare-ImgBed,MarSeventh/Sanyue-ImgHub&type=Date)](https://star-history.com/#MarSequent/CloudFlare-ImgBed&MarSequent/三岳-ImgHub&Date)
 
 #6.特别赞助人
 
 - **[CloudFlare](https://www.cloudflare.com) & [EdgeOne](https://edgeone.ai/?from=github)**：提供CDN加速和安全保护服务
 
-<一个href="https://www.cloudflare.com"><IMGsrc="readme/cloudflare-logo.png"alt="Cloudflare Logo"高度="25"></个><一个href="https://edgeone.ai/?from=github"><IMGsrc="readme/edgeone-logo.png"alt="腾讯Logo"高度="25"></一个>
+<一个href="https://www.cloudflare.com"><IMGsrc="readme/cloudflare-logo.PNG"alt="Cloudflare logo"高度="25"></个><一个href="https://edgeone.ai/?from=github"><IMGsrc="readme/edgeone-logo。PNG"alt="腾讯Logo"高度="25"></一个>
 
 - **[速维云](https://www.svyun.com/recommend/AELZ0UeMz8K11Zg7pEXC)**：提供云计算服务资源支持
 
--**[Linux DO](https://linux.do/)**fc：真诚友善团结专业
+-**[Linux DO](https://linux.do/)**：真诚友善团结专业
