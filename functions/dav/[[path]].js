@@ -120,7 +120,11 @@ async function handleGet(request, env) {
         try {
             const fileUrl = new URL(`/file${path}`, request.url);
 
-            const fileResponse = await fetch(fileUrl.toString());
+            // 修改：透传原始请求的 headers (包含 Range 等)，支持分段下载和断点续传
+            const newHeaders = new Headers(request.headers);
+            const fileResponse = await fetch(fileUrl.toString(), {
+                headers: newHeaders
+            });
 
             if (!fileResponse.ok) {
                  return new Response('File not found', { status: fileResponse.status, statusText: fileResponse.statusText });
@@ -323,8 +327,8 @@ function createCollectionXml(path) {
 }
 
 function createFileXml(file) {
-    // 文件大小：优先 FileSizeBytes（字节），回退到 FileSize（MB）转字节
-    let fileSize = "0";
+    // 修改：增加对原生 file.size 的支持，解决 WebDAV 客户端不显示大小的问题
+    let fileSize = file.size ? String(file.size) : "0";
     if (file.metadata) {
         if (file.metadata['FileSizeBytes']) {
             fileSize = String(file.metadata['FileSizeBytes']);
