@@ -27,7 +27,7 @@ export async function onRequest(context) {
         case 'DELETE': return handleDelete(modifiedRequest, env);
         case 'GET': return handleGet(modifiedRequest, env);
         case 'MOVE': return handleMove(modifiedRequest, env, context);
-        case 'MKCOL': return new Response(null, { status: 201 });
+        case 'MKCOL': return new Response(null, { status: 201 }); // 注意：这里目前仅返回 201，真实创建目录需配合后端 API
         default: return new Response('Method Not Allowed', { status: 405 });
     }
 }
@@ -116,11 +116,13 @@ async function checkAuth(request, env) {
 
 function handleOptions(request) {
     return new Response(null, {
-        status: 200,
+        status: 204,
         headers: {
-            'Allow': 'OPTIONS, GET, PUT, DELETE, PROPFIND, MOVE, MKCOL',
-            'DAV': '1',
-            'MS-Author-Via': 'DAV',
+            "Allow": "OPTIONS, GET, PUT, DELETE, PROPFIND, MOVE, MKCOL",
+            "DAV": "1,2",
+            "MS-Author-Via": "DAV",
+            "Accept-Ranges": "bytes",
+            "Content-Length": "0"
         },
     });
 }
@@ -128,7 +130,7 @@ function handleOptions(request) {
 async function handleGet(request, env) {
     const path = decodeURIComponent(new URL(request.url).pathname);
 
-    if (path.endsWith('/')) { // Directory listing
+    if (path.endsWith('/')) { // 处理目录列出
         try {
             const dir = path === '/' ? '' : path.substring(1, path.length - 1);
             const contents = await fetchDirectoryContents(dir, env, request);
@@ -138,20 +140,11 @@ async function handleGet(request, env) {
             console.error('GET (directory) failed:', error.stack);
             return new Response(`Error listing directory: ${error.message}`, { status: 500 });
         }
-    } else { // File download
+    } else { // 处理文件下载/播放
         try {
+            // 直链重定向，完美支持 206 断点续传
             const fileUrl = new URL(`/file${path}`, request.url);
-
-            const fileResponse = await fetch(fileUrl.toString());
-
-            if (!fileResponse.ok) {
-                 return new Response('File not found', { status: fileResponse.status, statusText: fileResponse.statusText });
-            }
-
-            const response = new Response(fileResponse.body, fileResponse);
-            response.headers.set('Access-Control-Allow-Origin', '*');
-
-            return response;
+            return Response.redirect(fileUrl.toString(), 302);
         } catch (error) {
             console.error('GET (file) failed:', error.stack);
             return new Response(`Error getting file: ${error.message}`, { status: 500 });
@@ -171,7 +164,6 @@ async function handlePut(request, env) {
 
     // 路径安全处理：防止路径穿越
     if (uploadFolder) {
-        // 防止双重编码绕过：仅在检测到编码字符时解码
         if (/%[0-9a-fA-F]{2}/.test(uploadFolder)) {
             try { uploadFolder = decodeURIComponent(uploadFolder); } catch (e) { /* ignore */ }
         }
@@ -182,10 +174,6 @@ async function handlePut(request, env) {
             .replace(/^\/+/, '')
             .replace(/\/+$/, '');
     }
-    
-    const fileContent = await request.blob();
-    const formData = new FormData();
-    formData.append('file', fileContent, fileName);
 
     const uploadUrl = new URL(`/upload`, request.url);
     uploadUrl.searchParams.set('uploadNameType', 'origin'); // WebDAV 规范：使用原始文件名
@@ -204,11 +192,14 @@ async function handlePut(request, env) {
     }
 
     try {
+        // 【核心修改】：使用流式传输 (Stream) 代替原来的 blob() 内存缓冲，彻底解决大文件上传 SocketTimeoutException
         const response = await fetch(uploadUrl.toString(), { 
             method: 'POST', 
-            body: formData,
-            headers: await getApiHeaders(env)
+            body: request.body,
+            headers: await getApiHeaders(env),
+            duplex: 'half' // 声明双工流模式，支持边接收客户端数据边转发
         });
+
         const result = await response.json(); 
         if (response.ok && Array.isArray(result) && result.length > 0 && result[0].src) {
             return new Response(null, { status: 201 }); // Created
@@ -268,7 +259,8 @@ async function handlePropfind(request, env) {
                 isFile = true;
                 fileInfo = {
                     name: cleanPath,
-                    metadata: fileData.metadata
+                    metadata: fileData.metadata,
+                    size: fileData.size
                 };
             }
         }
@@ -542,7 +534,7 @@ function createCollectionXml(path) {
 }
 
 function createFileXml(file) {
-    let fileSize = "0";
+    let fileSize = file.size ? String(file.size) : "0";
     if (file.metadata) {
         if (file.metadata['FileSizeBytes']) {
             fileSize = String(file.metadata['FileSizeBytes']);
